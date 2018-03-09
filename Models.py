@@ -1,6 +1,5 @@
 from tkinter import StringVar, IntVar, Text
-from os import startfile
-import time, docx
+
 
 class Case(object):
     """The base class of a case."""
