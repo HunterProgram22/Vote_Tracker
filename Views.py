@@ -1,7 +1,8 @@
 from tkinter import Frame, Menu, W, E, Label, Entry, Radiobutton, Checkbutton, \
-    Button, Text, WORD, END
+    Button, Text, WORD, END, StringVar
 import tkinter.ttk as ttk
 import tkinter as tk
+import webbrowser
 from functools import partial
 
 """Constants"""
@@ -12,6 +13,11 @@ HEADING_WIDTH = 30
 SUBHEADING_FONT = "Times 8"
 PREVIEW_FIELD_FONT = "Times 9"
 """End Constants"""
+
+
+
+def callback(event):
+    webbrowser.open_new(r"http://www.supremecourt.ohio.gov/Clerk/ecms/#/caseinfo/2017/0211")
 
 def add_weight(widget):
     rows = 0
@@ -41,8 +47,11 @@ def create_tab(application, tab_name, model):
     """A generic tab for multiple templates with a preview window."""
     tab = application.app_tab_dict[tab_name]
     add_heading(tab, 'Case Number')
-    entry = Entry(tab, width=20)
-    entry.grid(row=tab.row_cursor, column=tab.col_cursor, pady=5)
+    case = Label(tab, text=tab.case_number.get(), fg="black")
+    case.grid(row=tab.row_cursor, column=tab.col_cursor, pady=5)
+    link = Label(tab, text="CASE DOCKET", fg="blue", cursor="hand2")
+    link.grid(row=tab.row_cursor, column=tab.col_cursor+1, pady=5)
+    link.bind("<Button-1>", callback)
     tab.row_cursor += 1
     decline_button = Radiobutton(tab, text="Decline", variable=model.vote, value=1)
     decline_button.grid(row=tab.row_cursor, column=tab.col_cursor, sticky=W)
@@ -54,6 +63,9 @@ def create_tab(application, tab_name, model):
     notpart_button.grid(row=tab.row_cursor+3, column=tab.col_cursor, sticky=W)
     tab.row_cursor += 4
     vote_button = add_button_left(tab, "Submit Vote", partial(print_vote, model))
+    tab.row_cursor += 1
+    #next_button = add_button_left(tab, "Next Case", tab.next_case())
+
 
 class AppWindow(ttk.Frame):
     """The main application window."""
@@ -88,9 +100,14 @@ class TabWindow(ttk.Frame):
     """A class view object for creating tab windows on the main application. """
     def __init__(self, master):
         ttk.Frame.__init__(self, master)
+        self.case_number = StringVar()
+        self.case_number.set('2017-0211')
         self.master = master
         self.row_cursor = 0
         self.col_cursor = 0
+
+    def next_case(self):
+        self.case_number.set("Test")
 
     def set_col_cursor(self, column):
         self.col_cursor = column

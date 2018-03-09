@@ -6,7 +6,7 @@ import openpyxl
 
 FILE_PATH = "C:\\Users\\Justin Kudela\\Desktop\\"
 
-TAB_DICT = {'Manual Votes': 0, 'Scroll Votes': 1}
+TAB_DICT = {'Voting': 0, 'Results': 1}
 
 root = Tk()
 root.geometry("1050x620")
@@ -16,12 +16,16 @@ application = AppWindow(root, TAB_DICT)
 
 jur_list = openpyxl.load_workbook(FILE_PATH + 'Jur_list.xlsx')
 sheet = jur_list['Sheet1']
-print(sheet['A2'].value)
-print(sheet.max_row)
+row = 2
+scroll_list = []
+while row <= sheet.max_row:
+    scroll_list.append(sheet['A' + str(row)].value)
+    row +=1
 
+print(scroll_list)
 case_one = Case()
 
-create_tab(application, 'Manual Votes', case_one)
+create_tab(application, 'Voting', case_one)
 
 
 
